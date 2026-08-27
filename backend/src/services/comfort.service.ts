@@ -1,0 +1,115 @@
+// Calculate comfort score based on how close
+// the temperature is to the ideal temperature.
+export const calculateTemperatureScore = (temp: number): number => {
+  const idealTemp = 22; // °C
+  const penaltyRate = 3;
+
+  const score =
+    100 - Math.abs(temp - idealTemp) * penaltyRate;
+
+  return Math.max(0, Math.min(100, score));
+};
+
+
+// Calculate comfort score based on humidity.
+export const calculateHumidityScore = (humidity: number): number => {
+  const idealHumidity = 50; // %
+  const penaltyRate = 1.5;
+
+  const score =
+    100 - Math.abs(humidity - idealHumidity) * penaltyRate;
+
+  return Math.max(0, Math.min(100, score));
+};
+
+
+// Calculate comfort score based on wind speed.
+export const calculateWindScore = (windSpeed: number): number => {
+  const idealWind = 2; // m/s
+  const penaltyRate = 8;
+
+  const score =
+    100 - Math.abs(windSpeed - idealWind) * penaltyRate;
+
+  return Math.max(0, Math.min(100, score));
+};
+
+
+// Calculate comfort score based on visibility.
+// OpenWeather provides visibility in metres.
+// 10,000m is treated as maximum visibility.
+export const calculateVisibilityScore = (
+  visibility: number
+): number => {
+  const score = (visibility / 10000) * 100;
+
+  return Math.max(0, Math.min(100, score));
+};
+
+
+// Calculate comfort score based on atmospheric pressure.
+export const calculatePressureScore = (
+  pressure: number
+): number => {
+  const idealPressure = 1013; // hPa
+  const penaltyRate = 1.2;
+
+  const score =
+    100 - Math.abs(pressure - idealPressure) * penaltyRate;
+
+  return Math.max(0, Math.min(100, score));
+};
+
+
+// Calculate comfort score based on cloudiness.
+// Lower cloudiness = higher comfort score.
+export const calculateCloudinessScore = (
+  cloudiness: number
+): number => {
+  const penaltyRate = 0.6;
+
+  const score = 100 - cloudiness * penaltyRate;
+
+  return Math.max(0, Math.min(100, score));
+};
+
+
+// Calculate the final Comfort Index.
+export const calculateComfortIndex = (weather: any): number => {
+  const temperatureScore = calculateTemperatureScore(
+    weather.main.temp
+  );
+
+  const humidityScore = calculateHumidityScore(
+    weather.main.humidity
+  );
+
+  const windScore = calculateWindScore(
+    weather.wind.speed
+  );
+
+  const visibilityScore = calculateVisibilityScore(
+    weather.visibility ?? 0
+  );
+
+  const pressureScore = calculatePressureScore(
+    weather.main.pressure
+  );
+
+  const cloudinessScore = calculateCloudinessScore(
+    weather.clouds.all
+  );
+
+
+  // Weighted Comfort Index
+  const score =
+    temperatureScore * 0.30 +
+    humidityScore * 0.20 +
+    windScore * 0.15 +
+    visibilityScore * 0.15 +
+    pressureScore * 0.10 +
+    cloudinessScore * 0.10;
+
+  // Return score rounded to 2 decimal places.
+  return Number(score.toFixed(2));
+};
