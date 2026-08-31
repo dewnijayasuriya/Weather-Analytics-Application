@@ -1,10 +1,16 @@
-import fs from "fs";
-import path from "path";
+import citiesData from "../data/cities.json";
 
-const citiesPath = path.join(__dirname, "../data/cities.json");
+interface CityEntry {
+  CityCode: string;
+  CityName: string;
+  Temp: string;
+  Status: string;
+}
 
-export const getCities = () => {
-  const data = fs.readFileSync(citiesPath, "utf-8");
+interface CitiesFile {
+  List: CityEntry[];
+}
 
-  return JSON.parse(data);
-};
+// cities.json ships with the source and is bundled at compile time,
+// so this works the same in dev (ts-node) and prod (node dist/).
+export const getCities = (): CitiesFile => citiesData as CitiesFile;
