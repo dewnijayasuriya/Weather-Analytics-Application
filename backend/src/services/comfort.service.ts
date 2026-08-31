@@ -38,9 +38,15 @@ export const calculateWindScore = (windSpeed: number): number => {
 // Calculate comfort score based on visibility.
 // OpenWeather provides visibility in metres.
 // 10,000m is treated as maximum visibility.
+// When OpenWeather omits visibility we assume clear conditions
+// rather than penalising the city with a 0 score.
 export const calculateVisibilityScore = (
-  visibility: number
+  visibility: number | null | undefined
 ): number => {
+  if (visibility === null || visibility === undefined) {
+    return 100;
+  }
+
   const score = (visibility / 10000) * 100;
 
   return Math.max(0, Math.min(100, score));
@@ -89,7 +95,7 @@ export const calculateComfortIndex = (weather: any): number => {
   );
 
   const visibilityScore = calculateVisibilityScore(
-    weather.visibility ?? 0
+    weather.visibility
   );
 
   const pressureScore = calculatePressureScore(
