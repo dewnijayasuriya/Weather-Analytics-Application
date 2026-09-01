@@ -107,7 +107,7 @@ export default function CityModal({ city, onClose }: Props) {
               {comfortLabel(city.comfortIndex)}
             </p>
             <p className="text-[13px] text-muted">
-              {city.comfortIndex.toFixed(1)} / 100 · computed server-side
+              {city.comfortIndex.toFixed(1)} / 100
             </p>
           </div>
         </div>

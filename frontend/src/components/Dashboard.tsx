@@ -134,9 +134,9 @@ export default function Dashboard() {
           </span>
           <div>
             <h1 className="text-lg font-extrabold leading-tight">
-              Comfort Index
+              Weather Comfort Dashboard
             </h1>
-            <p className="text-[13px] text-muted">Weather Analytics</p>
+            <p className="text-[13px] text-muted">Compare weather conditions and comfort scores across cities</p>
           </div>
         </div>
 
@@ -191,12 +191,12 @@ export default function Dashboard() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
               <StatTile
                 icon={<ActivityIcon size={18} />}
-                label="Average comfort"
+                label="Average Comfort Score"
                 value={`${avgComfort.toFixed(0)}/100`}
               />
               <StatTile
                 icon={<TrendingUpIcon size={18} />}
-                label="Cities ranked"
+                label="Cities Compared"
                 value={data.count}
               />
             </div>
@@ -206,7 +206,7 @@ export default function Dashboard() {
           <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3">
             <span className="flex items-center gap-2 text-[13px] text-muted">
               <DatabaseIcon size={15} />
-              Cache:
+              Data Status:
               <span
                 className={
                   "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[12px] font-bold " +
@@ -232,7 +232,7 @@ export default function Dashboard() {
                 hour: "2-digit",
                 minute: "2-digit",
               })}{" "}
-              · TTL 5 min
+              · Refreshes every 5 min
             </span>
             <button
               type="button"
@@ -255,7 +255,7 @@ export default function Dashboard() {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search city…"
+                placeholder="Search by city..."
                 aria-label="Search city by name"
                 className="w-full rounded-xl border border-line bg-surface py-2 pl-9 pr-3 text-[14px] text-ink"
               />

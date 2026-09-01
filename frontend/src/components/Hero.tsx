@@ -20,7 +20,7 @@ export default function Hero({ city }: Props) {
 
       <div className="relative">
         <p className="text-[13px] font-medium uppercase tracking-wide text-white/80">
-          Most comfortable right now
+          Most Comfortable City
         </p>
 
         <div className="mt-1 flex flex-wrap items-baseline gap-x-3">
@@ -34,7 +34,7 @@ export default function Hero({ city }: Props) {
 
         <div className="mt-5 flex gap-10">
           <div>
-            <p className="text-[13px] text-white/75">Comfort score</p>
+            <p className="text-[13px] text-white/75">Comfort Score</p>
             <p className="text-2xl font-extrabold sm:text-3xl">
               {city.comfortIndex.toFixed(0)}
               <span className="text-base font-semibold text-white/70">/100</span>

@@ -88,7 +88,7 @@ export default function CityCard({ city, onOpen }: Props) {
         <Metric
           icon={<EyeIcon size={16} />}
           value={visibilityText}
-          label="Vis"
+          label="Visibility"
         />
       </div>
     </article>

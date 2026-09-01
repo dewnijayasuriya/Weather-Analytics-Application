@@ -32,7 +32,7 @@ export default function TempChart({ cities }: Props) {
         <span className="text-muted">
           <TrendingUpIcon size={16} />
         </span>
-        Temperature by city (°C)
+        Temperature Comparison by City (°C)
       </h2>
       <div className="overflow-x-auto">
         <svg
