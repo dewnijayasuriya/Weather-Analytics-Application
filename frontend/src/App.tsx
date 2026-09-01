@@ -1,70 +1,41 @@
+import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
-function App() {
-  const { loginWithRedirect, logout, isAuthenticated, isLoading, user } =
-    useAuth0();
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
 
+function App() {
+  const { isAuthenticated, isLoading } = useAuth0();
+
+  // Auth0 redirects back with ?error=... when a non-whitelisted user
+  // (or one who fails MFA) tries to log in.
   const params = new URLSearchParams(window.location.search);
-  const error = params.get("error");
-  const errorDescription = params.get("error_description");
+  const [authError, setAuthError] = useState<string | null>(
+    params.get("error_description") ?? params.get("error"),
+  );
+
+  const clearError = () => {
+    window.history.replaceState({}, document.title, "/");
+    setAuthError(null);
+  };
 
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  // Show Auth0 error
-  if (error) {
     return (
-      <>
-        <h1>Weather Analytics</h1>
-
-        <h2>Access Denied</h2>
-
-        <p>{errorDescription}</p>
-
-        <button
-          onClick={() => {
-            window.history.replaceState({}, document.title, "/");
-            window.location.reload();
-          }}
-        >
-          Back to Login
-        </button>
-      </>
+      <div className="grid min-h-screen place-items-center text-muted">
+        Loading…
+      </div>
     );
   }
 
-  // Normal login page
+  if (authError) {
+    return <Login authError={authError} onClearError={clearError} />;
+  }
+
   if (!isAuthenticated) {
-    return (
-      <>
-        <h1>Weather Analytics</h1>
-
-        <button
-          onClick={() =>
-            loginWithRedirect({
-              authorizationParams: {
-                prompt: "login",
-              },
-            })
-          }
-        >
-          Login
-        </button>
-      </>
-    );
+    return <Login />;
   }
 
-  // Authenticated page
-  return (
-    <>
-      <h1>Weather Analytics</h1>
-
-      <h2>Welcome, {user?.email}</h2>
-
-      <button onClick={() => logout()}>Logout</button>
-    </>
-  );
+  return <Dashboard />;
 }
 
 export default App;
