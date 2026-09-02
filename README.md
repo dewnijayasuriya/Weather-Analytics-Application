@@ -308,37 +308,15 @@ so parameters that dominate perceived comfort get the most weight.
 
 ## Trade-offs considered
 
-- **Piecewise-linear penalties vs. a smooth model.**
-  A Gaussian or a research-grade index (Humidex, Wind Chill, WBGT, UTCI) would be
-  more physically accurate but harder to explain and tune. Linear penalties with
-  a single "ideal" point and a slope per parameter are transparent, easy to
-  unit-test, and easy to defend in an interview.
+- The Comfort Index uses a simple weighted scoring model.
 
-- **Independent sub-scores vs. interaction terms.**
-  Real comfort has interactions (humidity matters far more at 35 °C than at
-  15 °C; wind helps in heat but hurts in cold). Modelling those adds complexity
-  and more magic numbers. The current model treats each parameter independently
-  and accepts some inaccuracy in extreme combinations.
+- A more advanced model could consider interactions between weather conditions. For example, high humidity may have a different effect depending on the temperature.
 
-- **Fixed weights vs. climate-aware weights.**
-  Weights are global constants. A tropical city and an arctic city are judged by
-  the same "ideal 22 °C". This is simpler and reproducible, at the cost of a
-  built-in bias toward temperate climates.
+- However, the current approach was chosen because it keeps the calculation simple and makes it possible to clearly understand how each weather condition contributes to the final score.
 
-- **`units=metric` from OpenWeather.**
-  Temperatures come back in °C directly, so no Kelvin conversion is needed in the
-  formula. The trade-off is one extra query parameter and a dependency on that
-  setting being present.
+- The ideal values, penalty rates, and weights are currently fixed values. They were selected as configurable scoring parameters to convert different weather measurements into a common 0 to 100 scale.
 
-- **Missing visibility ⇒ score 100.**
-  OpenWeather occasionally omits `visibility`. Treating it as "clear" (100)
-  rather than 0 avoids unfairly tanking a city for missing data, at the cost of
-  being optimistic when visibility genuinely is poor but unreported.
-
-- **Backend-only computation.**
-  The spec requires the score to be computed server-side. This also keeps the
-  formula in one place and lets the processed result be cached. The cost is that
-  the frontend cannot show a live "what-if" recalculation without a round trip.
+- In the future, these values could be improved using weather research, historical data, or user feedback.
 
 ---
 
@@ -407,35 +385,22 @@ handling, and 2-decimal rounding. **13 tests, all passing.**
 
 ## Bonus features implemented
 
-- **Dark mode** — toggle in the header, respects the OS preference on first
-  visit, choice persisted to `localStorage`.
-- **Unit tests** for the Comfort Index (see above).
-- **Sorting & filtering on the frontend** — sort by rank / comfort / temperature
-  / humidity / wind; filter by weather condition; free-text city search.
-- **Graph** — an SVG bar chart comparing current temperature across all cities
-  (no charting library; all custom code).
-- **City detail modal** — per-city breakdown of all raw weather values with the
-  comfort ring, opened from each card.
+- **Dark mode**
+- **City search** ve).
+- **Sorting & filtering on the frontend**
+- **Temperature comparison graph** 
+- **Unit tests for the Comfort Index**
+
 
 ---
 
 ## Known limitations
 
-- **No hourly temperature trend.** The spec's endpoint
-  (`/data/2.5/weather`) returns only *current* conditions, so a per-city
-  time-series graph is not possible without a second (paid/One-Call) API. The
-  temperature graph therefore compares cities at a single point in time.
-- **Comfort model is deliberately simple.** Linear penalties, no
-  parameter interactions, and a single global "ideal" per parameter — see
-  [Trade-offs](#trade-offs-considered). Extreme humidity+heat or wind+cold
-  combinations are under-penalised.
+- **No hourly temperature trend.** The temperature graph compares the current temperatures of cities and does not provide historical weather trends.
+- **Comfort model is deliberately simple.** The scoring model treats weather conditions independently and does not consider interactions between factors.
 - **Missing `visibility` is treated as clear** (score 100), which is optimistic.
-- **In-memory cache** — single instance only, lost on restart, no stampede
-  protection.
-- **`cities.json` is static** and bundled with the backend; there is no admin UI
-  to add cities. Two entries have blank `Temp`/`Status` fields, which are unused
-  (live data is always fetched).
-- **Auth0 dashboard settings** (MFA, disabled signups, whitelist Action) are not
-  in source control and must be reproduced manually in a new tenant.
+- **In-memory cache** — The cache is stored in application memory and is cleared when the backend server restarts.
+- **The current in-memory cache is suitable for this application but would not be shared between multiple backend server instances.** 
+- **For a larger production system, a shared caching solution such as Redis could be considered.** 
 - **MFA is email-based** per the spec; no TOTP/WebAuthn fallback is configured.
 ```
