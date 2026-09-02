@@ -53,20 +53,6 @@ export const calculateVisibilityScore = (
 };
 
 
-// Calculate comfort score based on atmospheric pressure.
-export const calculatePressureScore = (
-  pressure: number
-): number => {
-  const idealPressure = 1013; // hPa
-  const penaltyRate = 1.2;
-
-  const score =
-    100 - Math.abs(pressure - idealPressure) * penaltyRate;
-
-  return Math.max(0, Math.min(100, score));
-};
-
-
 // Calculate comfort score based on cloudiness.
 // Lower cloudiness = higher comfort score.
 export const calculateCloudinessScore = (
@@ -98,10 +84,6 @@ export const calculateComfortIndex = (weather: any): number => {
     weather.visibility
   );
 
-  const pressureScore = calculatePressureScore(
-    weather.main.pressure
-  );
-
   const cloudinessScore = calculateCloudinessScore(
     weather.clouds.all
   );
@@ -110,10 +92,9 @@ export const calculateComfortIndex = (weather: any): number => {
   // Weighted Comfort Index
   const score =
     temperatureScore * 0.30 +
-    humidityScore * 0.20 +
-    windScore * 0.15 +
+    humidityScore * 0.25 +
+    windScore * 0.20 +
     visibilityScore * 0.15 +
-    pressureScore * 0.10 +
     cloudinessScore * 0.10;
 
   // Return score rounded to 2 decimal places.
