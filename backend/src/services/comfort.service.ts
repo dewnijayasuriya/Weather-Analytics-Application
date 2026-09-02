@@ -65,6 +65,16 @@ export const calculateCloudinessScore = (
   return Math.max(0, Math.min(100, score));
 };
 
+export const calculatePressureScore = (pressure: number): number => {
+  const idealPressure = 1013; // hPa
+  const penaltyRate = 1.2;
+
+  const score =
+    100 - Math.abs(pressure - idealPressure) * penaltyRate;
+
+  return Math.max(0, Math.min(100, score));
+};
+
 
 // Calculate the final Comfort Index.
 export const calculateComfortIndex = (weather: any): number => {
@@ -88,14 +98,19 @@ export const calculateComfortIndex = (weather: any): number => {
     weather.clouds.all
   );
 
+  const pressureScore = calculatePressureScore(
+    weather.main.pressure
+  );
+
 
   // Weighted Comfort Index
   const score =
     temperatureScore * 0.30 +
-    humidityScore * 0.25 +
-    windScore * 0.20 +
+    humidityScore * 0.20 +
+    windScore * 0.15 +
     visibilityScore * 0.15 +
-    cloudinessScore * 0.10;
+    cloudinessScore * 0.10 +
+    pressureScore * 0.10;
 
   // Return score rounded to 2 decimal places.
   return Number(score.toFixed(2));
